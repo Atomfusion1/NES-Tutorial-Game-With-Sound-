@@ -1,8 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Header Settings For Starter NES roms this is boiler plate 
 ; Compile with ca65
-; .\cc65\bin\ca65 hellomario.asm -o hellomario.o --debug-info
-; .\cc65\bin\ld65 hellomario.o -o hellomario.nes -t nes --dbgfile hellomario.dbg
+; .\cc65\bin\ca65 helloNES.asm -o helloNES.o --debug-info
+; .\cc65\bin\ld65 helloNES.o -o helloNES.nes -t nes --dbgfile helloNES.dbg
 ;
 
 ; Start the NES header
@@ -34,10 +34,10 @@
 ; Setup Background and Forground Sprites 
 .include "SpriteBackSetup.s"
 
-; Jump to intialize Sound 
+; Jump to intialize Sound SoundSetup.s
 JSR Famitone5_Init
 
-; This is where the NES is while its waiting for the Graphics to finish one frame then trigger NMI 
+; This is where the NES is while its waiting for the Graphics to finish, one frame then trigger NMI 
 Loop:
     JMP Loop
 

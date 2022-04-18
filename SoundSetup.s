@@ -1,10 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Sound Setup
 ; Use Readme Files in Sound 
-; Includes to use Famitone5
-.include ".\Sound\Famitone5\famitone5.s"
-.include ".\Sound\Famitone5\text2data\FF1.s"
-.include ".\Sound\Famitone5\nsf2data\ralph4_sfx.s"
 
 ; Includes to use Famitone2 (Pick One)
 ;.include ".\Sound\Famitone2\ASM\famitone2.s"
@@ -26,6 +22,11 @@ Famitone2_Init:
     ;JSR FamiToneSfxInit
     RTS
 
+; Includes to use Famitone5
+.include ".\Sound\Famitone5\famitone5.s"
+.include ".\Sound\Famitone5\text2data\ralph4_music.s"
+.include ".\Sound\Famitone5\nsf2data\ralph4_sfx.s"
+
 ; Famitone5 Library (Larger / More Options/Effects)
 ;	-volume column support
 ;	-full note range
@@ -34,8 +35,8 @@ Famitone2_Init:
 ;	-sound fx > 256 bytes
 Famitone5_Init:
     ; set music data pointer
-    ldx #<FF1_music_data ;low
-    ldy #>FF1_music_data ;high
+    ldx #<ralph4_music_music_data ;low
+    ldy #>ralph4_music_music_data ;high
     lda #1 ;NTSC = 1, PAL = 0
     jsr FamiToneInit
     ; Set SFX Famitone5 data pointer / ini Note Famitone5 uses Sounds not SFX_data in Famitone2

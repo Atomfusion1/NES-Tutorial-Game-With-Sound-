@@ -3,7 +3,7 @@
 ;duty envelopes, and effects 1xx,2xx,3xx,4xx,Qxx,Rxx
 
 
-ralph4_music_data:
+ralph4_music_music_data:
 	.byte 2
 	.word @instruments
 	.word @samples-3

@@ -1,2 +1,2 @@
-text2vol5.exe FF1.txt -ca65
+text2vol5.exe ralph4_music.txt -ca65
 pause	
