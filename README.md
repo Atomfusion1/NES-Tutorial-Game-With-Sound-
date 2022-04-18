@@ -10,6 +10,7 @@ Setup Controller one and press the buttons, You will move around a sprite, Start
 This Project contains everything needed to compile your nes cart 
 I find Youtube NESHacker very informative but he does not have a Demo Cart like this at 4/18/22
 https://www.youtube.com/watch?v=RtY5FV5TrIU
+Use your Editor of Choice , I like VSCode extension ca65 Macro assembler 
 
 
 Download Famitracker http://famitracker.com/ to Edit/Make your own songs then 
