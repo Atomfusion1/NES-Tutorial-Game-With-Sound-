@@ -24,7 +24,7 @@ backgroundLo:   .res 1
 backgroundHi:   .res 1
 counterLo:      .res 1
 counterHi:      .res 1
-world:          .res 2
+world:          .res 2  ; 16 Bit Value (High/Low Bits need to be inserted )
 player_x:       .res 1  ; .rs 1 means reserve one byte of space  
 player_y:       .res 1  ; 
 

@@ -1,5 +1,5 @@
-RESET:
 ; Basic Memory Reset
+RESET:              
     SEI           ; disable IRQs
     CLD		    ; disable decimal mode
     LDX #$40
@@ -12,14 +12,15 @@ RESET:
     STX $4010 	; disable DMC IRQs
 
 
-; first wait for vblank to make sure PPU is ready
+; First wait for vblank to make sure PPU is ready
 vblankwait1:
     BIT $2002
     BPL vblankwait1
 
-clear_memory:
-    lda #$00
-    STA $0000, X
+    LDX #$00                ; Load Registry X with $00 Hex 
+clear_memory:               ; Label 
+    LDA #$00                ; Load Registry A with $00 Hex  
+    STA $0000, X            ; Store Registry 
     STA $0100, X
     STA $0300, X
     STA $0400, X
@@ -28,21 +29,11 @@ clear_memory:
     STA $0700, X
     LDA #$FF        ; This moves all Sprites off Screen 
     STA $0200, X    ; $0200 => $02FF
-    LDA #$00
-    INX
+    INX             ; Add 1 to X 
+    CPX #$00
     BNE clear_memory
 
 ; second wait for vblank, PPU is ready after this
 vblankwait2:
     BIT $2002
     BPL vblankwait2
-
-    LDA #$02
-    STA $4014
-    NOP
-    ; $3F00
-    LDA #$3F
-    STA $2006
-    LDA #$00
-    STA $2006
-    LDX #$00

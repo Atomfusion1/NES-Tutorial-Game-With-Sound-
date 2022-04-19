@@ -3,7 +3,11 @@
 ; Compile with ca65
 ; .\cc65\bin\ca65 helloNES.asm -o helloNES.o --debug-info
 ; .\cc65\bin\ld65 helloNES.o -o helloNES.nes -t nes --dbgfile helloNES.dbg
-;
+; Basic NMOS 6502 http://www.6502.org/tutorials/6502opcodes.html
+; Start Tutorial Warning they are in NESASM https://nerdy-nights.nes.science/
+; https://github.com/ddribin/nerdy-nights
+; https://github.com/JamesSheppardd/Nerdy-Nights-ca65-Translation
+; 
 
 ; Start the NES header
 .include "Header.s"
@@ -35,7 +39,7 @@
 .include "SpriteBackSetup.s"
 
 ; Jump to intialize Sound SoundSetup.s
-JSR Famitone5_Init
+JSR Famitone_Init
 
 ; This is where the NES is while its waiting for the Graphics to finish, one frame then trigger NMI 
 Loop:

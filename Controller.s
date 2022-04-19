@@ -16,15 +16,14 @@ ReadController1:
   JSR ReadStart1
   JSR ReadB1
   JSR ReadA1
-  RTS
+  RTS           ; Return to Caller
 
-
-
+; tell both the controllers to latch buttons
 LatchController:
   LDA #$01
   STA $4016
   LDA #$00
-  STA $4016       ; tell both the controllers to latch buttons
+  STA $4016       
   RTS
 ;;;;;;;;;;;;;;;;;;
 ; Read controller input into byte vector
