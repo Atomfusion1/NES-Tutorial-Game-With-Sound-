@@ -24,10 +24,11 @@
     ; When the processor first turns on or is reset, it will jump to the label reset:
     .addr RESET
     ; External interrupt IRQ (unused)
-    .addr 0
+    .addr 0 ; MMC3 use etc. 
 
 ; "nes" linker config requires a STARTUP section, even if it's empty
 .segment "STARTUP"
+
 
 ; Setup Sound Engine (more info in SoundSetup.s)
 .include "SoundSetup.s"
@@ -41,25 +42,24 @@
 ; Jump to intialize Sound SoundSetup.s
 JSR Famitone_Init
 
-; This is where the NES is while its waiting for the Graphics to finish, one frame then trigger NMI 
-Loop:
-    JMP Loop
-
-
 ; Controller Code for Checking Inputs 
 .include "Controller.s"
+
+; This is where the NES is while its waiting for the Graphics to finish, one frame then trigger NMI 
+Loop:
+    JMP Loop ; This protects from entering into NMI before
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This is where you do everything to control the game
 NMI:
-; Read Controller Input 
-    JSR ReadController1
-
-    LDA #$00
-    STA $2003       ; set the low byte (00) of the RAM address
+    ;LDA #$00
+    ;STA $2003       ; set the low byte (00) of the RAM address
     LDA #$02
     STA $4014       ; set the high byte (02) of the RAM address, start the transfer
     
+    ; Read Controller Input 
+    JSR ReadController1
+
 ; Player Movement Sprite X Position 
     LDA playerx
     STA $0203
@@ -96,22 +96,29 @@ NMI:
 
 ; Call Music once per update 
     JSR FamiToneUpdate 
-    RTI
+    RTI ; Interrupt Return.. RTS for normal Returns 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End NMI 
     
 
     
 PaletteData:
-    .byte $22,$29,$1A,$0F,$22,$36,$17,$0f,$22,$30,$21,$0f,$22,$27,$17,$0F  ;background palette data
-    .byte $22,$16,$27,$18,$22,$1A,$30,$27,$22,$16,$30,$27,$22,$0F,$36,$17  ;sprite palette data
+; 1-4 color pallet $10,$29,$1A,$0F next 4 color $10,$36,$17,$0f etc. $22 = blue $10 = grey
+; first byte $10 Should be the same in all of them and is the background color 
+    .byte $10,$29,$1A,$0F,$10,$36,$17,$0f,$10,$30,$21,$0f,$10,$27,$17,$0F  ;background palette data
+    .byte $10,$16,$27,$18,$10,$1A,$30,$27,$10,$16,$30,$27,$10,$0F,$36,$17  ;sprite palette data
 
-; Background Data Edit in yy-chr
+; Background Data in binary file 32 x 30 grid of data 
+; https://hexed.it/ Settings: Bytes per row 32, Show 0x00 bytes as space .. Welcome Background 
+; ; NES Screen Tool https://forums.nesdev.org/viewtopic.php?t=15648
 WorldData:
-    .incbin "world.bin" ; What or how do you edit this ? 
+;    .incbin "world2.bin" ; Binary File hexed.it
+    .include "World.s"
 
-; Sprite Location Data 
+
+; Sprite Location Data In Binary 
 SpriteData:
+;Man    Y pos, Tile, ? , X pos
     .byte $08, $00, $00, $08
     .byte $08, $01, $00, $10
     .byte $10, $02, $00, $08

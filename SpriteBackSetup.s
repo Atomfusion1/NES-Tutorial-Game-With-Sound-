@@ -1,17 +1,18 @@
 ; Turn on PPU and Load Data 
     LDA #$02
     STA $4014
-    NOP
-    ; $3F00
+    NOP     ; Busy CPU while waiting for PPU 
+    ; $3F00 PPU Address Register and write twice MSB Universal Background Color
     LDA #$3F
-    STA $2006
+    STA $2006 ;PPU Address Register
     LDA #$00
     STA $2006
 
     LDX #$00
 LoadPalettes:
+; 2 Sets of pallets 
     LDA PaletteData, X
-    STA $2007 ; $3F00, $3F01, $3F02 => $3F1F
+    STA $2007 ; $3F00, $3F01, $3F02 => $3F1F ; auto inc. per write 
     INX
     CPX #$20
     BNE LoadPalettes    
@@ -58,18 +59,22 @@ SetAttributes:          ; 16x16 PPU Attribute Table
 
     LDX #$00
     LDY #$00    
-LoadSprites:
+LoadSprites: ; Load 8x8 or 8x16 (PPU OAM)
     LDA SpriteData, X
-    STA $0200, X 
+    STA $0200, X ; auto inc. SpriteData is already correct loadin 
     INX
     CPX #$20
     BNE LoadSprites    
 
 ; Enable interrupts
     CLI
+;   VPHB SINN = 
+;   *  |        Generate NMI at start of VBI
+;      *        Background Table address $1000
     LDA #%10010000 ; enable NMI change background to use second chr set of tiles ($1000)
     STA $2000
     ; Enabling sprites and background for left-most 8 pixels
     ; Enable sprites and background
+;   BGRs bMmG = Eblue, Egreen, Ered, Show Sprites, Show background, show sprites, show back, greyscale 
     LDA #%00011110
     STA $2001
