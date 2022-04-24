@@ -23,7 +23,10 @@ LatchController:
   LDA #$01
   STA $4016
   LDA #$00
-  STA $4016       
+  STA $4016   
+  ; Reset Moving  
+  LDA #$00 
+  STA Moving   
   RTS
 ;;;;;;;;;;;;;;;;;;
 ; Read controller input into byte vector
@@ -65,10 +68,12 @@ ReadRight1:
   AND #%00000001        ; only look at bit 0
   BEQ ReadRightDone1    ; branch to ReadADone if button is NOT pressed (0)
                         ; add instructions here to do something when button IS pressed (1)
+  LDA #$01
+  STA Moving
   LDA $0203             ; load sprite X position
   CLC                   ; make sure the carry flag is clear
   LDA playerx 
-  ADC #$02
+  ADC #$01
   STA playerx
 ReadRightDone1:         ; handling this button is done
   RTS
@@ -79,10 +84,12 @@ ReadLeft1:
   AND #%00000010      ; only look at bit 0
   BEQ ReadLeftDone1   ; branch to ReadBDone if button is NOT pressed (0)
                       ; add instructions here to do something when button IS pressed (1)
+  LDA #$01
+  STA Moving
   LDA $0203           ; load sprite X position
   CLC
   LDA playerx
-  ADC #$FE 
+  ADC #$FF
   STA playerx
 ReadLeftDone1:        ; handling this button is done
   RTS
@@ -158,6 +165,22 @@ ReadA1:
   LDX #0 
   LDA #1
   JSR FamiToneSfxPlay  
+
+  LDA FireBall
+  CMP #$00
+  BNE :+  
+    LDA #$01
+    STA FireBall
+    CLC
+    LDA playerx
+    ADC #$09
+    STA FireBallX
+    CLC
+    LDA playery
+    ADC #$0F
+    STA FireBallY
+  :
+ 
 
   ;LDA inAir
   ;CMP #$01

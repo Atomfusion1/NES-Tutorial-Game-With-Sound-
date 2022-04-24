@@ -15,13 +15,14 @@ LoadPalettes:
     STA $2007 ; $3F00, $3F01, $3F02 => $3F1F ; auto inc. per write 
     INX
     CPX #$20
-    BNE LoadPalettes    
+    BNE LoadPalettes 
+    
     ; Initialize world to point to world data
     ; Load Lower Byte of WorldData Location
-    LDA #<WorldData
+    LDA #<WorldData1 ; Setup Pointer 
     STA world
     ; Load Upper Byte of WorldData Location and Save in World+1  
-    LDA #>WorldData
+    LDA #>WorldData1
     STA world+1
     ; setup address in PPU for nametable data
     BIT $2002   ; This Read Reset 2006 High / Low Byte locations This loaded $2000 into PPU 
@@ -34,7 +35,7 @@ LoadPalettes:
     LDX #$00
     LDY #$00
 LoadWorld:
-    LDA (world), Y
+    LDA (world), Y ; User Pointer 
     STA $2007
     INY
     CPX #$03                
@@ -44,27 +45,70 @@ LoadWorld:
 :                           ; Unnamed Label BNE:+ 
     CPY #$00
     BNE LoadWorld
-    INX
-    INC world+1     ; High Byte add 1 so same as adding 256 to address 
-    JMP LoadWorld   ; Large Loop 
-DoneLoadingWorld:
+        INX
+        INC world+1     ; High Byte add 1 so same as adding 256 to address 
+        JMP LoadWorld   ; Large Loop 
+    DoneLoadingWorld:
+    ; the last 64 bytes in a bin file created from NESST has the attribute table in it so lets load it in also 
+    Attributes:
+        LDA (world), Y
+        STA $2007
+        INY
+        CPX #$03                
+        BNE :+                  ; Goes to first : after it 
+        CPY #$C0                ; X = 3 and Y = C0
+        BEQ DoneLoadingAttributes    ; Breaks out of loop 
+    :                           ; Unnamed Label BNE:+ 
+        CPY #$00
+        BNE Attributes
+    DoneLoadingAttributes:
 
+    ; Initialize world to point to world data
+    ; Load Lower Byte of WorldData Location
+    LDA #<WorldData2
+    STA world
+    ; Load Upper Byte of WorldData Location and Save in World+1  
+    LDA #>WorldData2
+    STA world+1
+    ; setup address in PPU for nametable data
+;    BIT $2002   ; This Read Reset 2006 High / Low Byte locations This loaded $2000 into PPU 
+;    LDA #$20
+;    STA $2006
+;    LDA #$00
+;    STA $2006
+
+    ; Reset X and Y positions 
     LDX #$00
-SetAttributes:          ; 16x16 PPU Attribute Table 
-    LDA #$55
+    LDY #$00
+LoadWorld1:
+    LDA (world), Y
     STA $2007
-    INX
-    CPX #$40
-    BNE SetAttributes
+    INY
+    CPX #$03                
+    BNE :+                  ; Goes to first : after it 
+    CPY #$C0                ; X = 3 and Y = C0
+    BEQ DoneLoadingWorld1    ; Breaks out of loop 
+:                           ; Unnamed Label BNE:+ 
+    CPY #$00
+    BNE LoadWorld1
+        INX
+        INC world+1     ; High Byte add 1 so same as adding 256 to address 
+        JMP LoadWorld1   ; Large Loop 
+    DoneLoadingWorld1:
+    ; the last 64 bytes in a bin file created from NESST has the attribute table in it so lets load it in also 
+    Attributes1:
+        LDA (world), Y
+        STA $2007
+        INY
+        CPX #$03                
+        BNE :+                  ; Goes to first : after it 
+        CPY #$C0                ; X = 3 and Y = C0
+        BEQ DoneLoadingAttributes1    ; Breaks out of loop 
+    :                           ; Unnamed Label BNE:+ 
+        CPY #$00
+        BNE Attributes1
+    DoneLoadingAttributes1:
 
-    LDX #$00
-    LDY #$00    
-LoadSprites: ; Load 8x8 or 8x16 (PPU OAM)
-    LDA SpriteData, X
-    STA $0200, X ; auto inc. SpriteData is already correct loadin 
-    INX
-    CPX #$20
-    BNE LoadSprites    
 
 ; Enable interrupts
     CLI

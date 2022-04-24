@@ -27,4 +27,18 @@ counterHi:      .res 1
 world:          .res 2  ; 16 Bit Value (High/Low Bits need to be inserted )
 player_x:       .res 1  ; .rs 1 means reserve one byte of space  
 player_y:       .res 1  ; 
+Scroll:         .res 1  ; Tell if Scrolling 
+HalfTimer:      .res 1  ; Half timer 
+NMITimer:       .res 1  ; Timer every 1/60 second or 1/50th PAL
+SecTimer:       .res 1  ; Second Timer 
+temp_x:         .res 1
+temp_y:         .res 1  
+temp_z:         .res 1
+player_moving:  .res 1
+FireBallX:      .res 1
+FireBallY:      .res 1
+FireBall:       .res 1
+Sprite:         .res 2
+Moving:         .res 1 
+
 
